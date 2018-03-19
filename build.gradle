@@ -21,6 +21,14 @@ sourceCompatibility = 1.8
 
 repositories {
 	mavenCentral()
+	// Use local artifactory for DB drivers when run in ncei network,
+	// run with '-Pncei' flag. If not in ncei network, be sure you have an
+	// ojdbc (oracle db connecting) jar locally in 'libs' folder
+	if (project.hasProperty('ncei')) {
+		maven {
+			url 'https://devtools.ngdc.noaa.gov/artifactory/contrib-release-local'
+		}
+	}
 }
 
 
@@ -29,6 +37,11 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-jdbc')
 	compile('org.springframework.boot:spring-boot-starter-web')
+	if (project.hasProperty('ncei')) {
+		compile "com.oracle:ojdbc6:11.2.0.3"
+	} else {
+		compile fileTree(dir: 'libs', include: '*.jar') /* Primarily for local ojdbc.  */
+	}
 	runtime('org.springframework.boot:spring-boot-devtools')
 	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')

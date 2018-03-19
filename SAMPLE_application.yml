@@ -1,0 +1,19 @@
+server:
+  port: 8160
+  contextPath: /geosamples
+spring:
+  application:
+    name: geosamples
+  datasource:
+    url: <oracle connection string>
+    username: <username>
+    password: <password>
+  jpa:
+    properties:
+      hibernate:
+        default_schema: <default schema>
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.hibernate: INFO
