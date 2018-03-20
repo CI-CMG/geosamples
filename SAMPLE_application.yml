@@ -12,6 +12,7 @@ spring:
     properties:
       hibernate:
         default_schema: <default schema>
+        dialect: org.hibernate.spatial.dialect.oracle.OracleSpatial10gDialect
 logging:
   level:
     root: INFO
