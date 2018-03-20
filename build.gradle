@@ -21,6 +21,9 @@ sourceCompatibility = 1.8
 
 repositories {
 	mavenCentral()
+	maven {
+		url 'https://repo.spring.io/libs-release'
+	}
 	// Use local artifactory for DB drivers when run in ncei network,
 	// run with '-Pncei' flag. If not in ncei network, be sure you have an
 	// ojdbc (oracle db connecting) jar locally in 'libs' folder
@@ -44,5 +47,8 @@ dependencies {
 	}
 	runtime('org.springframework.boot:spring-boot-devtools')
 	compileOnly('org.projectlombok:lombok')
+	compile 'com.vividsolutions:jts:1.13'
+	compile 'org.springframework.data:spring-data-rest-webmvc:3.0.5.RELEASE'
+  compile "org.hibernate:hibernate-spatial:5.2.14.Final"
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
