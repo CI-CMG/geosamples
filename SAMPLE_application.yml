@@ -2,8 +2,10 @@ server:
   port: 8160
   contextPath: /geosamples
 spring:
-  application:
-    name: geosamples
+  data:
+    rest:
+      basePath: /geosamples
+      defaultPageSize: 25
   datasource:
     url: <oracle connection string>
     username: <username>
