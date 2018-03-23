@@ -39,7 +39,7 @@ public class Sample {
   private String end_lonmin;
   private String end_ew;
   private String latlon_orig;
-  private String water_depth;
+  private BigDecimal water_depth;
   private BigDecimal end_water_depth;
   private String storage_meth;
   private BigDecimal cored_length;
