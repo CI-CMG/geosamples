@@ -61,6 +61,8 @@ public class Sample {
   private String imlgs;
 
   public String getShape() {
-    return new WKTWriter().write(this.shape);
+    return (this.shape != null)
+      ? new WKTWriter().write(this.shape)
+      : null;
   }
 }
