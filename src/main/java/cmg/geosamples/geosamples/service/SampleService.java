@@ -1,14 +1,14 @@
 package cmg.geosamples.geosamples.service;
 
+import cmg.geosamples.geosamples.config.PredicateService;
 import cmg.geosamples.geosamples.domain.Sample;
 import cmg.geosamples.geosamples.repo.SampleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import java.util.List;
-
-import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.startsWith;
+import com.querydsl.core.types.Predicate;
+import org.springframework.util.MultiValueMap;
 
 @Component
 public class SampleService {
@@ -16,22 +16,14 @@ public class SampleService {
   @Autowired
   SampleRepository sampleRepository;
 
-  private ExampleMatcher getMatcher() {
-    ExampleMatcher matcher = ExampleMatcher.matchingAll()
-      .withMatcher("lake", startsWith().ignoreCase())
-      .withMatcher("device", startsWith().ignoreCase())
-      .withMatcher("platform", startsWith().ignoreCase())
-      .withMatcher("cruise", startsWith().ignoreCase())
-      .withMatcher("facility_code", startsWith().ignoreCase())
-      .withMatcher("date", startsWith().ignoreCase());
-      // Water depth range
-      //.withMatcher("water_depth", match -> match);
-      // Geospatial (within bounding box)
-    return matcher;
-  }
+  @Autowired
+  PredicateService predicateService;
 
-  public List<Sample> findSamples(Sample probe) {
-    return sampleRepository.findAll(Example.of(probe, getMatcher()));
+  public Page<Sample> findSamples(MultiValueMap<String, String> parameters,
+                                  Pageable page) {
+
+    Predicate predicate = predicateService.getPredicateFromParameters(parameters, Sample.class);
+    return sampleRepository.findAll(predicate, page);
   }
 
 }
