@@ -19,5 +19,9 @@ public interface SampleRepository extends JpaRepository<Sample, Integer>,
       path.goe(value));
     bindings.bind(sample.end_water_depth).first((path, value) ->
       path.loe(value));
+    bindings.bind(sample.begin_date).first((path, value) ->
+      path.startsWith(value));
+    bindings.bind(sample.cruise).first((path, value) ->
+      path.startsWith(value));
   }
 }

@@ -25,6 +25,5 @@ public class SampleService {
     Predicate predicate = predicateService.getPredicateFromParameters(parameters, Sample.class);
     return sampleRepository.findAll(predicate, page);
   }
-
 }
 
