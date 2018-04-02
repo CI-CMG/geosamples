@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 @RepositoryRestController
 public class SampleController {
 
@@ -20,10 +22,8 @@ public class SampleController {
 
   @RequestMapping(value="/samples", method=RequestMethod.GET)
   @ResponseBody
-  public Page<Sample> getSamples(
-    @RequestParam final MultiValueMap<String, String> parameters,
-    Pageable page) {
-
-    return sampleService.findSamples(parameters, page);
+  public List<Sample> getSamples(
+    @RequestParam final MultiValueMap<String, String> parameters) {
+    return sampleService.findSamples(parameters);
   }
 }
