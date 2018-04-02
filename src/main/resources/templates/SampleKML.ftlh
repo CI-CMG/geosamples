@@ -58,10 +58,8 @@
           <coordinates>-12.567, 56.277,0</coordinates>
         </Point>
       </Placemark>
-
-
-      …
+      ...
     </Folder>
-
+    ...
   </Document>
 </kml>
