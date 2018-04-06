@@ -18,6 +18,7 @@ package cmg.geosamples.geosamples.service;
   import java.util.ArrayList;
   import freemarker.template.SimpleHash;
 
+  import java.util.Date;
   import java.util.List;
   import java.util.Map;
 
@@ -38,7 +39,7 @@ public class SampleService {
     generateKml(kmlHashMap, response);
   }
 
-  private List<Sample> getSampleList(MultiValueMap<String, String> parameters) {
+  public List<Sample> getSampleList(MultiValueMap<String, String> parameters) {
     Predicate predicate = predicateService.getPredicateFromParameters(
       parameters, Sample.class);
     List<Sample> sampleList = new ArrayList<>();
@@ -57,11 +58,12 @@ public class SampleService {
     dataModel.put("lon", globals.get("global_lon"));
     dataModel.put("facility", globals.get("global_facility"));
     dataModel.put("samples", sampleList);
+    dataModel.put("getFacilityName", legacyKmlService.getFacilityName());
     return dataModel;
   }
 
   private void generateKml(SimpleHash sampleList, HttpServletResponse response) {
-    String filename = "GeoSamples.kml";
+    String filename = "GeoSamples-" + new Date().toString().replace(" ", "-") + ".kml";
     try {
       Template kmlTempl = getFreeMarkerTemplate();
       kmlTempl.process(sampleList, getResponseWriter(response, filename));
@@ -97,9 +99,11 @@ public class SampleService {
     throws ServletException, IOException {
 
     // Set the content type
-    response.setContentType("Content-type: text/xml");
+    response.setContentType(
+      "Content-type: application/vnd.google-earth.kml+xml");
     response.setHeader("Content-Disposition",
-      "attachment; filename=" + filename);
+      "attachment; filename="
+        + filename);
 
     // Create writer for servelet stream
     ServletOutputStream servletOutputStream = response.getOutputStream();
