@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import javax.servlet.http.HttpServletResponse;
 
 @RepositoryRestController
@@ -17,9 +16,10 @@ public class SampleController {
   @Autowired
   SampleService sampleService;
 
-  @RequestMapping(value="/samples", method=RequestMethod.GET)
+  @RequestMapping(value="/samples", method=RequestMethod.GET,
+    headers={"content-type=application/vnd.google-earth.kml+xml"})
   @ResponseBody
-  public void getSamples(
+  public void getSamplesAsKml(
     @RequestParam final MultiValueMap<String, String> parameters,
     HttpServletResponse response) {
     sampleService.findSamples(parameters, response);
