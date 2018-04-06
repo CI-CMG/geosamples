@@ -16,7 +16,10 @@ package cmg.geosamples.geosamples.service;
   import javax.servlet.http.HttpServletResponse;
   import java.io.*;
   import java.util.ArrayList;
+  import freemarker.template.SimpleHash;
+
   import java.util.List;
+  import java.util.Map;
 
 @Component
 public class SampleService {
@@ -25,29 +28,49 @@ public class SampleService {
   SampleRepository sampleRepository;
   @Autowired
   PredicateService predicateService;
+  @Autowired
+  LegacyKmlService legacyKmlService;
 
   public void findSamples(MultiValueMap<String, String> parameters,
                                   HttpServletResponse response) {
-    Predicate predicate = predicateService.getPredicateFromParameters(
-      parameters, Sample.class);
-
-    List<Sample> target = new ArrayList<>();
-    Iterable<Sample> iterable = sampleRepository.findAll(predicate);
-    iterable.forEach(target::add);
-    generateKml(target, response);
+    List<Sample> sampleList = getSampleList(parameters);
+    SimpleHash kmlHashMap = buildKmlHash(sampleList, parameters);
+    generateKml(kmlHashMap, response);
   }
 
-  public void generateKml(List<Sample> sampleList, HttpServletResponse response) {
+  private List<Sample> getSampleList(MultiValueMap<String, String> parameters) {
+    Predicate predicate = predicateService.getPredicateFromParameters(
+      parameters, Sample.class);
+    List<Sample> sampleList = new ArrayList<>();
+    Iterable<Sample> iterable = sampleRepository.findAll(predicate);
+    iterable.forEach(sampleList::add);
+    return sampleList;
+  }
+
+  // TODO: Extend freemarker Template to build hash from Sample List?
+  private SimpleHash buildKmlHash(List<Sample> sampleList,
+                                           MultiValueMap<String, String> parameters){
+    // Re-implement similar logic of deriving KML global params
+    SimpleHash dataModel = new SimpleHash();
+    Map<String, String> globals = legacyKmlService.getGlobalParams(parameters);
+    dataModel.put("lat", globals.get("global_lat"));
+    dataModel.put("lon", globals.get("global_lon"));
+    dataModel.put("facility", globals.get("global_facility"));
+    dataModel.put("samples", sampleList);
+    return dataModel;
+  }
+
+  private void generateKml(SimpleHash sampleList, HttpServletResponse response) {
     String filename = "GeoSamples.kml";
     try {
       Template kmlTempl = getFreeMarkerTemplate();
-      kmlTempl.process(sampleList.get(1), getResponseWriter(response, filename));
+      kmlTempl.process(sampleList, getResponseWriter(response, filename));
     } catch (java.io.IOException io) {
       System.out.println(io);
     } catch (javax.servlet.ServletException se) {
 
     } catch (freemarker.template.TemplateException te) {
-
+      System.out.println(te);
     }
   }
 
