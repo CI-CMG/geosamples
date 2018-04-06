@@ -15,12 +15,9 @@ package cmg.geosamples.geosamples.service;
   import javax.servlet.ServletOutputStream;
   import javax.servlet.http.HttpServletResponse;
   import java.io.*;
-  import java.util.ArrayList;
-  import freemarker.template.SimpleHash;
+  import java.util.*;
 
-  import java.util.Date;
-  import java.util.List;
-  import java.util.Map;
+  import freemarker.template.SimpleHash;
 
 @Component
 public class SampleService {
@@ -39,6 +36,44 @@ public class SampleService {
     generateKml(kmlHashMap, response);
   }
 
+  public void samplesToCsv(MultiValueMap<String, String> parameters,
+                                  HttpServletResponse response) {
+
+    String filename = "GeoSamples-" + new Date().toString().replace(" ", "-") + ".csv";
+
+    // Set the content type
+    response.setContentType(
+      "Content-type: text/csv");
+    response.setHeader("Content-Disposition",
+      "attachment; filename="
+        + filename);
+
+    PrintWriter dos = null;
+    Writer csvWriter = null;
+    try {
+      csvWriter = getResponseWriter(response);
+      dos = new PrintWriter(csvWriter);
+      dos.println("Heading1\tHeading2\tHeading3\t");
+      Iterator<Sample> sampleIterator =
+        getSampleList(parameters).iterator();
+      while (sampleIterator.hasNext()) {
+        dos.print(sampleIterator.next());
+        dos.println();
+      }
+    } catch (javax.servlet.ServletException se) {
+      System.out.println("Error Printing Tab Delimited File" + se);
+    } catch (java.io.IOException ie) {
+      System.out.println("Error Printing Tab Delimited File" + ie);
+    } finally {
+      if (dos != null) { dos.close(); }
+      try {
+        if (csvWriter != null) { csvWriter.close(); }
+      } catch (java.io.IOException ie) {
+        System.out.println("Error closing csv writer" + ie);
+      }
+    }
+  }
+
   public List<Sample> getSampleList(MultiValueMap<String, String> parameters) {
     Predicate predicate = predicateService.getPredicateFromParameters(
       parameters, Sample.class);
@@ -50,7 +85,7 @@ public class SampleService {
 
   // TODO: Extend freemarker Template to build hash from Sample List?
   private SimpleHash buildKmlHash(List<Sample> sampleList,
-                                           MultiValueMap<String, String> parameters){
+                                  MultiValueMap<String, String> parameters){
     // Re-implement similar logic of deriving KML global params
     SimpleHash dataModel = new SimpleHash();
     Map<String, String> globals = legacyKmlService.getGlobalParams(parameters);
@@ -63,10 +98,19 @@ public class SampleService {
   }
 
   private void generateKml(SimpleHash sampleList, HttpServletResponse response) {
+
     String filename = "GeoSamples-" + new Date().toString().replace(" ", "-") + ".kml";
+
+    // Set the content type
+    response.setContentType(
+      "Content-type: application/vnd.google-earth.kml+xml");
+    response.setHeader("Content-Disposition",
+      "attachment; filename="
+        + filename);
+
     try {
       Template kmlTempl = getFreeMarkerTemplate();
-      kmlTempl.process(sampleList, getResponseWriter(response, filename));
+      kmlTempl.process(sampleList, getResponseWriter(response));
     } catch (java.io.IOException io) {
       System.out.println(io);
     } catch (javax.servlet.ServletException se) {
@@ -95,15 +139,8 @@ public class SampleService {
     return cfg.getTemplate("SampleKML.ftlh");
   }
 
-  public Writer getResponseWriter(HttpServletResponse response, String filename)
+  public Writer getResponseWriter(HttpServletResponse response)
     throws ServletException, IOException {
-
-    // Set the content type
-    response.setContentType(
-      "Content-type: application/vnd.google-earth.kml+xml");
-    response.setHeader("Content-Disposition",
-      "attachment; filename="
-        + filename);
 
     // Create writer for servelet stream
     ServletOutputStream servletOutputStream = response.getOutputStream();
