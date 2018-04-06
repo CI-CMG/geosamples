@@ -30,24 +30,23 @@
     <description><![CDATA[About:<br /><br />The Index to Marine and Lacustrine Geological Samples (IMLGS) is a tool to help scientists locate and obtain geologic material from sea floor and lakebed cores, grabs, and dredges archived by <a href="https://www.ngdc.noaa.gov/mgg/curator/participants.HTML" style="text-decoration: none;">participating institutions</a>. Before proposing research on any sample, please contact the curator for sample condition and availability.<br /><br />The IMLGS includes basic collection and storage information and links to related data and images available for many samples at the originating institutions, NCEI, and related websites.Alternate interfaces and web services are also available: <a href="https://dx.doi.org/doi:10.7289/V5H41PB8" style="text-decoration: none;">https://dx.doi.org/doi:10.7289/V5H41PB8</a>.<br /><br />Cite the database as:<br /><br /><strong><cite>Curators of Marine and Lacustrine Geological Samples Consortium: Index to Marine and Lacustrine Geological Samples (IMLGS). National Geophysical Data Center, NOAA. <a href="https://dx.doi.org/doi:10.7289/V5H41PB8" title="go to Digital Object Identifier (DOI) for the IMLGS" style="text-decoration: none;">doi:10.7289/V5H41PB8</a></cite>.</strong><br /><br />Data Sources and Credits:<br /><br />Data are contributed by partner repositories, please cite the repository if you use data from this database. Several U.S. insitutions receive funding from the National Science Foundation (<a href="http://www.nsf.gov/" style="text-decoration: none;">NSF</a>) to prepare data for the IMLGS. <br /><br />The National Centers for Environmental Information (<a href="https://www.ngdc.noaa.gov/" style="text-decoration: none;">NCEI</a>)/World Data Service for Geophysics maintains the IMLGS on behalf of the participating institutions, as the NSF-designated archive<br />(<a href="http://www.nsf.gov/publications/pub_summ.jsp?ods_key=nsf11060&amp;org=NSF" style="text-decoration: none;">NSF Division of Ocean Sciences Data and Sample Policy</a>). NCEI is part of the National Oceanic and Atmospheric Administration (<a href="http://noaa.gov" style="text-decoration: none;">NOAA</a>),<br />US Department of Commerce.]]></description>
     <visibility>1</visibility>
     <open>0</open>
-    <#assign lastFacility = "">
+    <#assign lastFacilityCode = "">
     <#list samples as sample>
-      <#assign currentFacility = sample.facility_code>
-      <#if currentFacility != lastFacility>
-        <#if lastFacility != "">
+      <#assign facilityCode = sample.facility_code>
+      <#if facilityCode != lastFacilityCode>
+        <#if lastFacilityCode != "">
         </Folder>
         </#if>
+        <#assign facilityName = getFacilityName(facilityCode)>
         <Folder>
         <styleUrl>#csm</styleUrl>
-        <name>Woods Hole Oceanographic Institution</name>
+        <name>${facilityName}</name>
         <Snippet></Snippet>
-        <description><![CDATA[<table align="center" border="0"><tr align="left"><td><p><a href="http://www.whoi.edu/science/GG/corelab/index.html">Woods Hole Oceanographic Institution</a><br>(http://www.whoi.edu/science/GG/corelab/index.html)<br>Jim Broda<br>Ellen Roosen<br>Woods Hole Oceanographic Institution<br>Department of Geology and Geophysics<br>Woods Hole, MA 02543<br>(508)289-2466 (Jim Broda)<br>(508)289-2959 (Ellen Roosen)<br>(508)457-2183 (fax)<br><a href="mailto:jbroda@whoi.edu">jbroda@whoi.edu</a><br><a href="mailto:eroosen@whoi.edu">eroosen@whoi.edu</a><br></p><br><br>
+        <description><![CDATA[<table align="center" border="0"><tr align="left"><td><p><a href="http://www.whoi.edu/science/GG/corelab/index.html">${facilityName}</a><br>(http://www.whoi.edu/science/GG/corelab/index.html)<br>Jim Broda<br>Ellen Roosen<br>${facilityName}<br>Department of Geology and Geophysics<br>Woods Hole, MA 02543<br>(508)289-2466 (Jim Broda)<br>(508)289-2959 (Ellen Roosen)<br>(508)457-2183 (fax)<br><a href="mailto:jbroda@whoi.edu">jbroda@whoi.edu</a><br><a href="mailto:eroosen@whoi.edu">eroosen@whoi.edu</a><br></p><br><br>
           <cite>Cite as: Woods Hole Oceanographic Institution (WHOI) Seafloor Samples Laboratory: Archive of WHOI geosample data and information. NOAA National Centers for Environmental Information. <a href="https://dx.doi.org/10.7289/V5WH2N0Z">doi:10.7289/V5WH2N0Z</a> [date of access]</cite></td></tr></table>]]></description>
         <visibility>1</visibility>
         <open>0</open>
       </#if>
-
-
       <Placemark>
         <name></name>
         <styleUrl>#csm</styleUrl>
@@ -65,7 +64,7 @@
           <coordinates>${(sample.lon)!}, ${(sample.lat)!}</coordinates>
         </Point>
       </Placemark>
-      <#assign lastFacility = currentFacility>
+      <#assign lastFacilityCode = facilityCode>
     </#list>
     </Folder>
   </Document>

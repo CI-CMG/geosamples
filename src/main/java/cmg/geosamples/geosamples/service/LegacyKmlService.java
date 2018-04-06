@@ -1,16 +1,18 @@
 package cmg.geosamples.geosamples.service;
 
+import freemarker.template.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * This legacy service captures logic that was in place as part of the jsp view
  * files in the original Geosamples app. It should be considered for
- * replacement by data store/hibernaate backed logic.
+ * port to the data store.
  */
 @Component
 public class LegacyKmlService {
@@ -147,5 +149,107 @@ public class LegacyKmlService {
       put("global_lat", String.valueOf(lat));
       put("global_lon", String.valueOf(lon));
     }};
+  }
+  public FacilityMethod getFacilityName() {
+    return new FacilityMethod();
+  }
+
+  private class FacilityMethod implements TemplateMethodModel {
+    public TemplateModel exec(List args) throws TemplateModelException {
+      if (args.size() != 1) {
+        throw new TemplateModelException("Wrong arguments");
+      }
+      String facilityCode = args.get(0).toString(), facilityName = "";
+      switch (facilityCode) {
+        case "AOML":
+          facilityName = "NOAA Atlantic Oceanographic and Meteorological Labs (repository closed)";
+          break;
+        case "ARFFSU":
+          facilityName = "Antarctic Marine Geology Research Facility, Florida State University";
+          break;
+        case "AWI":
+          facilityName ="Alfred-Wegener-Institut";
+          break;
+        case "BOSCORF":
+          facilityName = "British Ocean Sediment Core Research Facility";
+          break;
+        case "BPCRC":
+          facilityName = "Byrd Polar and Climate Research Center, Sediment Core Repository";
+          break;
+        case "BPCRR":
+          facilityName = "Byrd Polar and Climate Research Center, Polar Rock Repository";
+          break;
+        case "Canada":
+          facilityName = "Geological Survey of Canada Atlantic Marine Geoscience Curation Facility";
+          break;
+        case "DSDP":
+          facilityName = "Deep Sea Drilling Project Samples at IODP";
+          break;
+        case "EDYTEM":
+          facilityName = "Universite de Savoie, EDYTEM";
+          break;
+        case "GEOMAR":
+          facilityName = "GEOMAR Helmholtz Centre for Ocean Research Kiel";
+          break;
+        case "NMNH":
+          facilityName = "Integrated Ocean Drilling Program Samples at IODP";
+          break;
+        case "LDEO":
+          facilityName = "Lamont-Doherty Core Repository, Columbia University";
+          break;
+        case "LacCore":
+          facilityName = "National Lacustrine Core Repository, U. Minnesota";
+          break;
+        case "ODP":
+          facilityName = "Ocean Drilling Program Samples at IODP";
+          break;
+        case "OSU":
+          facilityName = "Oregon State University Marine Geology Repository";
+          break;
+        case "PMEL":
+          facilityName = "NOAA Pacific Marine Environmental Laboratory";
+          break;
+        case "RSMAS":
+          facilityName = "Rosenstiel School of Marine and Atmospheric Science";
+          break;
+        case "SIO":
+          facilityName = "Scripps Institution of Oceanography Geological Collections";
+          break;
+        case "SOEST":
+          facilityName = "University of Hawaii at Manoa, SOEST";
+          break;
+        case "U WISC":
+          facilityName = "University of Wisconsin-Madison Geology Museum";
+          break;
+        case "URI":
+          facilityName = "University of Rhode Island Graduate School of Oceanography";
+          break;
+        case "USC":
+          facilityName = "University of Southern California";
+          break;
+        case "USGSMP":
+          facilityName = "USGS Pacific Coastal and Marine Science Center";
+          break;
+        case "USGSSP":
+          facilityName = "USGS St. Petersburg Coastal and Marine Science Center";
+          break;
+        case "USGSWH":
+          facilityName = "USGS Woods Hole Coastal and Marine Science Center";
+          break;
+        case "ECS":
+          facilityName = "US Extended Continental Shelf Project Samples Repository";
+          break;
+        case "UT":
+          facilityName = "University of Texas at Austin Institute for Geophysics";
+          break;
+        case "WHOI":
+          facilityName = "Woods Hole Oceanographic Institution";
+          break;
+        default:
+          facilityName ="";
+          break;
+      }
+      return new SimpleScalar(facilityName);
+    }
   }
 }
