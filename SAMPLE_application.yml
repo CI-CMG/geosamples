@@ -6,6 +6,7 @@ spring:
     rest:
       basePath: /geosamples
       defaultPageSize: 25
+      defaultMediaType: application/json
   datasource:
     url: <oracle connection string>
     username: <username>
