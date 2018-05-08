@@ -19,9 +19,18 @@ public class SampleController {
   @RequestMapping(value="/samples", method=RequestMethod.GET,
     headers={"content-type=application/vnd.google-earth.kml+xml"})
   @ResponseBody
-  public void getSamplesAsKml(
+  public void getSamplesAsText(
     @RequestParam final MultiValueMap<String, String> parameters,
     HttpServletResponse response) {
     sampleService.findSamples(parameters, response);
+  }
+
+  @RequestMapping(value="/samples", method=RequestMethod.GET,
+    headers={"content-type=text/csv"})
+  @ResponseBody
+  public void getSamplesAsCsv(
+    @RequestParam final MultiValueMap<String, String> parameters,
+    HttpServletResponse response) {
+    sampleService.samplesToCsv(parameters, response);
   }
 }
